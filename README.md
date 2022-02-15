@@ -95,15 +95,12 @@
 # 3-2. 프로젝트 방법론 - 추천모델
 
 ### A. 유사도 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
-
 - 방법
 
   1. USER 데이터셋과 POLICY 데이터셋의 공통된 feature 추출.
-  2. 모든 feature를 One-Hot으로 만들어서 np.array(USER * feature) X np.array(feature * POLICY) 를 진행하여 최고 점수의 정책을 추천.
-  <img src='https://user-images.githubusercontent.com/43432539/154008065-fd578275-ddba-499e-b572-f2bf939587cb.png' width='400' height='400'/>
+  2. 모든 feature를 One-Hot으로 만들어서 np.array(USER * feature) X np.array(feature * POLICY) 를 진행하여 최고 점수의 정책을 추천.</br>
+    <img src='https://user-images.githubusercontent.com/43432539/154008065-fd578275-ddba-499e-b572-f2bf939587cb.png' width='800' height='600'/>
   
-
-
 - 방법론 선정 이유
 
   1. 정책의 갯수가 매우 많기 때문에 1차적으로 basic한 유사도 모델을 통해 고객이 관심을 가질만한 정책을 선별하기 위함.
@@ -112,8 +109,20 @@
 
 
 ### B. Wide & Depp 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
+- 방법</br>
+  USER가 평가한 POLICY 정보가 없기 때문에 label을 강제로 만들어줘야 함.</br></br>
+  a. USER의 '관심정책' feature를 사용하여 1,0 binary하게 생성.
+    - 단점: 관심정책 feature는 모델 성능 개선에 기여할 수 있는 부분인데 label로 사용됨. | POLICY마다 '관심정책' feature 값을 새롭게 만들어야 하므로 공수가 많음
+  b. USER와 POLICY의 공통된 feature에서 겹치는게 n개 이상일 경우 1, 아닐 경우 0 binary하게 생성
+    - 단점: feaure가 겹친다고 해서 유저가 원하는 정책인지는 의문.
+  
+- 방법론 선정 이유
 
-</br>
+  1. 정책 도메인 특성상 추천될 정책과 유저의 조건이 부합하는 것이 중요하면서도, 새로운 정책을 추천할 수 있어야 함.
+  2. Wide Part는 Linear한 부분으로, 유저와 정책의 특성이 정확히 일치하는 부분에 대해 기억하여 상세화된 예측 결과를 제시할 수 있음. 과적합 발생 가능.
+  3. Deep Part는 Non-Linear한 부분으로, 유저와 정책의 특성을 일반화하여 추천함. 과적합 방지. 새로운 정책 추천 가능.
+ 
+ </br>
 
 # 4-1. 프로젝트 결과 및 보완점 - 태깅모델
 ### A. 키워드 기반 label 생성
@@ -145,10 +154,13 @@
 
 - **결과**
 
-  ㅁㄴㅇㄹ
+  따로 성능을 평가할 수 있는 지표가 없기 때문에 USER의 정보를 임의로 넣었을 때 아래와 같은 POLICY가 추천됨.</br>
+  ![image](https://user-images.githubusercontent.com/43432539/154010953-7ab597a9-0c78-41c8-9183-fc5cb3a5366b.png)
+
   
 - **한계 및 보완점**
-1. ㅁㄴㅇㄹ
+1. USER나 POLICY context 정보의 질에 따라 다른 모델을 구축하는 방향으로 진행해보면 좋을 것 같음.</br>
+  USER가 프로필을 가득 채운 경우 더 specific한 모델로, POLICY의 context의 질이 좋지 않을 경우 general한 모델로 나누는 방법.
 
 ### B. Wide & Depp 기반 추천
 

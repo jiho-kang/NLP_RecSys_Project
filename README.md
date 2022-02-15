@@ -60,9 +60,11 @@
       word = ['임신', '임산부', '출산']
       tag = '여성'
       df['성별'].apply(lambda x: re.sub(word, tag, x))
+      
+      # 결과
+      # 성별 feature의context가 '임산부를 위한 치료비 지원 정책'일 경우, '여성를 위한 치료비 지원 정책'로 변경됨
       ```
-    성별 feature의context가 '임산부를 위한 치료비 지원 정책' --> '여성를 위한 치료비 지원 정책'
-
+      
   2. A에서 추출한 결과값을 모델의 label값으로 주고, KoBERT 사용하여 feature별로 학습. Bert Tokenizer로 토큰화 후 CrossEntropyLoss를 최소화하며 학습
 
 - 방법론 선정 이유
@@ -74,23 +76,26 @@
 
 ### A. 유사도 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 
-  **D. Wide & Deep 추천**
+### B. Wide & Depp 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 
 </br>
 
-# 4. 결과 및 보안점
-- 태깅 모델</br>
+# 4-1. 프로젝트 결과 및 보안점 - 태깅모델
+### A. 키워드 기반 label 생성
 
-  A. 키워드 기반 label 생성</br>
-  : 새롭게 만든 label들의 정확도가 최대 99% ~ 최소 40% 정도임.</br>
-  - **한계 및 보완점**
+- **결과**
+
+  새롭게 만든 label들의 정확도가 최대 99% ~ 최소 40% 정도임.</br>
+  
+- **한계 및 보완점**
+ 
   1. 정책 도메인에 맞는 키워드와 함께 개체명 인식기를 직접 만들려고 했으나, 존재하는 개체명 인식기를 활용하는 것이 아니라 직접 만드는 것은 상당히 어려운 일. 프로젝트의 목적은 context 속 태깅 추출과 추천 모델 구축이기 때문에 for문과 if문으로 태그 추출하여 label을 생성함.
   2. 기업에서 제공해준 태깅 답지로 정확도를 측정했으나, 답지 자체가 100%의 정확도를 갖지 않음. 신뢰도가 어느정도인지 알 수 없음.
 
-  B. 추출된 label 기반 KoBERT 학습 (Pytorch)</br>
-  : 엄?
-    1. 키워드 기반으로 만든 label 자체의 정확도가 낮기 때문에 성능에 한계가 존재.
-    2. 
+B. 추출된 label 기반 KoBERT 학습 (Pytorch)</br>
+: 엄?
+  1. 키워드 기반으로 만든 label 자체의 정확도가 낮기 때문에 성능에 한계가 존재.
+  2. 
 
 
 

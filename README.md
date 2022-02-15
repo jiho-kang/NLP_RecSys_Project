@@ -98,12 +98,18 @@
 
 - 방법
 
-  1. USER 데이터셋과 POLICY 데이터셋의 공통된 feature 요소만 사용하여 행렬곱을 취함.
-  2. 
+  1. USER 데이터셋과 POLICY 데이터셋의 공통된 feature 추출.
+  2. 모든 feature를 One-Hot으로 만들어서 np.array(USER * feature) X np.array(feature * POLICY) 를 진행하여 최고 점수의 정책을 추천.
+  ![image](https://user-images.githubusercontent.com/43432539/154007753-a8876e1f-8322-41e5-b914-09b59ca1e0ef.png)
+  <img src='https://user-images.githubusercontent.com/43432539/154007753-a8876e1f-8322-41e5-b914-09b59ca1e0ef' width='200' height='400'/>
+  
+
 
 - 방법론 선정 이유
 
-  1. 신경망 모델 학습에
+  1. 정책의 갯수가 매우 많기 때문에 1차적으로 basic한 유사도 모델을 통해 고객이 관심을 가질만한 정책을 선별하기 위함.
+  2. CF나 CB를 사용하기에는 유저가 경험한 정책의 여부를 알 수 없음.
+  3. 피처별로 가중치를 다르게 줄 수 있음.
 
 
 ### B. Wide & Depp 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
@@ -130,7 +136,8 @@
 - **한계 및 보완점**
 1. 키워드 기반으로 만든 label 자체의 정확도가 낮기 때문에 성능에 한계가 존재.
 2. Input의 label을 One-Hot 형태로 변환하지 않았음.
-3. label값이 여러개인 feature의 경우 어떻게 해야할지 모르겠어서 태깅모델 A을 이용함. 프로젝트를 회고하며 알게된 multi label classification 방법을 공부한다면 해결할 수 있을 것으로 보임.
+3. label값이 여러개인 feature의 경우 어떻게 해야할지 모르겠어서 태깅모델 A을 이용함.</br>
+    프로젝트를 회고하며 알게된 multi label classification 방법을 공부한다면 해결할 수 있을 것으로 보임.
 
 </br>
 

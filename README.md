@@ -7,8 +7,8 @@
 [2. 프로젝트 개요](#2-프로젝트-개요)</br>
 [3-1. 프로젝트 방법론 - 태깅모델](#3-1-프로젝트-방법론---태깅모델)</br>
 [3-2. 프로젝트 방법론 - 추천모델](#3-2-프로젝트-방법론---추천모델)</br>
-[4-1. 프로젝트 결과 및 보안점 - 태깅모델](#4-1-프로젝트-결과-및-보안점---태깅모델)</br>
-[4-2. 프로젝트 결과 및 보안점 - 추천모델](#4-2-프로젝트-결과-및-보안점---추천모델)</br>
+[4-1. 프로젝트 결과 및 보점 - 태깅모델](#4-1-프로젝트-결과-및-보완점---태깅모델)</br>
+[4-2. 프로젝트 결과 및 보완점 - 추천모델](#4-2-프로젝트-결과-및-보완점---추천모델)</br>
 
 
 
@@ -51,20 +51,25 @@
 
 - 방법
 
-  feature별 키워드를 설정하고 for, if문을 이용하여 필터링 진행.
-
-- 방법론 선정 이유
-
-  신경망 모델 학습에 필요한 **label값이 존재하지 않기 때문**에 먼저 라벨을 생성해주어야 함.</br>
-
+  1. feature별로 카테고리의 class를 대표하는 키워드를 설정
+  2. context에 해당 키워드가 n개 이상일 경우 class 추출
     ``` python
     # example
     if sum(text.count(x) for x in ['임신', '임산부', '출산']) >= 3:
+      text_tag.append('여성')
     ```
+
+- 방법론 선정 이유
+
+  1. 신경망 모델 학습에 필요한 label값이 존재하지 않기 때문에 먼저 라벨을 생성해주어야 함.
+  2. 정책 도메인에 맞는 키워드와 함께 개체명 인식기를 직접 만들려고 했으나, 존재하는 개체명 인식기를 활용하는 것이 아니라 직접 만드는 것은 상당히 어려운 일.</br>
+  프로젝트의 목적은 context 속 태깅 추출과 추천 모델 구축이기 때문에 for문과 if문으로 태그 추출하여 label을 생성함.
+  3. 베이스라인 모델로서 사용될 수 있음.
+
     
-### B. 추출된 label 기반 KoBERT 학습 (Pytorch)** [(KoBERT_tagging_model.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/KoBERT_tagging_model.ipynb)
+### B. 추출된 label 기반 KoBERT 학습 (Pytorch) [(KoBERT_tagging_model.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/KoBERT_tagging_model.ipynb)
 - 방법
-  1. 추출하고자 하는 태깅과 관련된 키워드를 해당 태깅단어로 바꿈.
+  1. 추출하고자 하는 태깅값과 관련된 키워드를 해당 값으로 바꿈.
 
       ``` python
       # example
@@ -73,33 +78,49 @@
       df['성별'].apply(lambda x: re.sub(word, tag, x))
       
       # 결과
-      # 성별 feature의context가 '임산부를 위한 치료비 지원 정책'일 경우, '여성를 위한 치료비 지원 정책'로 변경됨
+      # 성별 feature의context가 '임산부를 위한 치료비 지원 정책'일 경우,
+      #                         => '여성를 위한 치료비 지원 정책'로 변경됨
       ```
       
-  2. A에서 추출한 결과값을 모델의 label값으로 주고, KoBERT 사용하여 feature별로 학습. Bert Tokenizer로 토큰화 후 CrossEntropyLoss를 최소화하며 학습
+  2. A에서 추출한 결과값을 모델의 label로 주고, KoBERT 사용하여 feature별로 학습.</br>
+      Bert Tokenizer로 토큰화 후 CrossEntropyLoss를 최소화하며 학습
 
 - 방법론 선정 이유
   1. 정책 텍스트의 길이가 길고, 복잡하기 때문에 양방향 학습이 가능해야하며, 데이터가 크기 때문에 병렬처리가 가능한 KoBERT 모델을 선택.
   2. KoBERT는 한국어 학습이 진행된 모델이므로 기존 BERT의 사전학습된 bert-base-multilingual-cased 보다 성능이 좋을 것으로 예상.
   3. context에서 키워드를 변환함으로써 정확도를 높일 수 있을 것이라 예상함
 
+</br>
+
 # 3-2. 프로젝트 방법론 - 추천모델
 
 ### A. 유사도 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
+
+- 방법
+
+  1. USER 데이터셋과 POLICY 데이터셋의 공통된 feature 요소만 사용하여 행렬곱을 취함.
+  2. 
+
+- 방법론 선정 이유
+
+  1. 신경망 모델 학습에
+
 
 ### B. Wide & Depp 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 
 </br>
 
-# 4-1. 프로젝트 결과 및 보안점 - 태깅모델
+# 4-1. 프로젝트 결과 및 보완점 - 태깅모델
 ### A. 키워드 기반 label 생성
 
 - **결과**
 
   새롭게 만든 label들의 정확도가 최대 99% ~ 최소 40% 정도임.</br>
+  ![image](https://user-images.githubusercontent.com/43432539/154006070-9251f826-b870-4751-a4a1-727b604a2fee.png)
+
   
 - **한계 및 보완점**
-1. 정책 도메인에 맞는 키워드와 함께 개체명 인식기를 직접 만들려고 했으나, 존재하는 개체명 인식기를 활용하는 것이 아니라 직접 만드는 것은 상당히 어려운 일. 프로젝트의 목적은 context 속 태깅 추출과 추천 모델 구축이기 때문에 for문과 if문으로 태그 추출하여 label을 생성함.
+1. 태깅이 쉬운 feature는 정확도가 높게 나왔으나, 복잡한 context를 가진 feature는 정확도가 낮게 나옴. => 정확도를 높이기 알고리즘을 보완해야 함.
 2. 기업에서 제공해준 태깅 답지로 정확도를 측정했으나, 답지 자체가 100%의 정확도를 갖지 않음. 신뢰도가 어느정도인지 알 수 없음.
 
 ### B. 추출된 label 기반 KoBERT 학습 (Pytorch)
@@ -113,7 +134,7 @@
 
 </br>
 
-# 4-2. 프로젝트 결과 및 보안점 - 추천모델
+# 4-2. 프로젝트 결과 및 보완점 - 추천모델
 ### A. 유사도 기반 추천
 
 - **결과**

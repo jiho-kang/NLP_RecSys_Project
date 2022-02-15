@@ -100,8 +100,7 @@
 
   1. USER 데이터셋과 POLICY 데이터셋의 공통된 feature 추출.
   2. 모든 feature를 One-Hot으로 만들어서 np.array(USER * feature) X np.array(feature * POLICY) 를 진행하여 최고 점수의 정책을 추천.
-  ![image](https://user-images.githubusercontent.com/43432539/154007753-a8876e1f-8322-41e5-b914-09b59ca1e0ef.png)
-  <img src='https://user-images.githubusercontent.com/43432539/154007753-a8876e1f-8322-41e5-b914-09b59ca1e0ef' width='200' height='400'/>
+  <img src='https://user-images.githubusercontent.com/43432539/154008065-fd578275-ddba-499e-b572-f2bf939587cb.png' width='400' height='400'/>
   
 
 

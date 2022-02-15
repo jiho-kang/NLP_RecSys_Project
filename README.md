@@ -149,7 +149,7 @@
 1. 키워드 기반으로 만든 label 자체의 정확도가 낮기 때문에 성능에 한계가 존재.
 2. Input의 label을 One-Hot 형태로 변환하지 않았음.
 3. label값이 여러개인 feature의 경우 어떻게 해야할지 모르겠어서 태깅모델 A을 이용함.</br>
-    프로젝트를 회고하며 알게된 multi label classification 방법을 공부한다면 해결할 수 있을 것으로 보임.
+    프로젝트를 회고하며 알게된 multi label classification 방법을 공부한다면 해결할 수 있을 것으로 보임. [참고자료]('https://m.blog.naver.com/PostView.naver?isHttpsRedirect=true&blogId=chrhdhkd&logNo=221469784081')
 
 </br>
 

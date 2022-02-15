@@ -28,43 +28,51 @@
 
 </br>
 
-# 3. 프로젝트 방법론
-- 유저, 정책 데이터 EDA</br>
+# 3-1. 프로젝트 방법론 - 태깅모델
 
-- **태깅모델**</br>
-  - user에서 추출할 태그 feature (13개)</br>
-  : 성별, 나이, 시도, 시군구, 학력, 직장, 가구원 유형, 결혼, 자녀, 자녀상세, 대상특성, 관심상황특성, 중위소득, 관심정책
+- user에서 추출할 태그 feature (13개)</br>
+: 성별, 나이, 시도, 시군구, 학력, 직장, 가구원 유형, 결혼, 자녀, 자녀상세, 대상특성, 관심상황특성, 중위소득, 관심정책
 
-  - policy에서 추출할 태그 feature (20개)</br>
-  : 정책ID, 정책서비스ID, 서비스명, 소관기관, 소관기관유형, 생애주기, 신청절차, 선정기준, 지원유형, 서비스목적,  지원내용, 지원대상</br>
+- policy에서 추출할 태그 feature (20개)</br>
+: 정책ID, 정책서비스ID, 서비스명, 소관기관, 소관기관유형, 생애주기, 신청절차, 선정기준, 지원유형, 서비스목적,  지원내용, 지원대상</br>
 
-  **A. 키워드 기반 label 생성** [Code](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
-  
-  - 방법
+### A. 키워드 기반 label 생성 [(filtering_smilarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 
-    feature별 키워드를 설정하고 for, if문을 이용하여 필터링 진행.
+- 방법
 
-  - 방법론 선정 이유
-  
-    신경망 모델 학습에 필요한 label값이 존재하지 않기 때문에 먼저 라벨을 생성해주어야 함.</br>
+  feature별 키워드를 설정하고 for, if문을 이용하여 필터링 진행.
+
+- 방법론 선정 이유
+
+  신경망 모델 학습에 필요한 **label값이 존재하지 않기 때문**에 먼저 라벨을 생성해주어야 함.</br>
+
+    ``` python
+    # example
+    if sum(text.count(x) for x in ['임신', '임산부', '출산']) >= 3:
+    ```
     
-      ex) 성별 feature 中 '여성' 의 키워드: '임신', '임산부' 등등
+### B. 추출된 label 기반 KoBERT 학습 (Pytorch)** [(KoBERT_tagging_model.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/KoBERT_tagging_model.ipynb)
+- 방법
+  1. 추출하고자 하는 태깅과 관련된 키워드를 해당 태깅단어로 바꿈.
 
-  **B. 추출된 label 기반 KoBERT 학습 (Pytorch)** [Code](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/KoBERT_tagging_model.ipynb)
-  - 방법
-    1. 추출하고자 하는 태깅과 관련된 키워드를 해당 태깅단어로 바꿈.
+      ``` python
+      # example
+      word = ['임신', '임산부', '출산']
+      tag = '여성'
+      df['성별'].apply(lambda x: re.sub(word, tag, x))
+      ```
+    성별 feature의context가 '임산부를 위한 치료비 지원 정책' --> '여성를 위한 치료비 지원 정책'
 
-        ex) 성별 feature의context가 '임산부를 위한 치료비 지원 정책' --> '여성를 위한 치료비 지원 정책'
+  2. A에서 추출한 결과값을 모델의 label값으로 주고, KoBERT 사용하여 feature별로 학습. Bert Tokenizer로 토큰화 후 CrossEntropyLoss를 최소화하며 학습
 
-    2. A에서 추출한 결과값을 모델의 label값으로 주고, KoBERT 사용하여 feature별로 학습. Bert Tokenizer로 토큰화 후 CrossEntropyLoss를 최소화하며 학습
-    
-  - 방법론 선정 이유
-    1. 정책 텍스트의 길이가 길고, 복잡하기 때문에 양방향 학습이 가능해야하며, 데이터가 크기 때문에 병렬처리가 가능한 KoBERT 모델을 선택.
-    2. KoBERT는 한국어 학습이 진행된 모델이므로 기존 BERT의 사전학습된 bert-base-multilingual-cased 보다 성능이 좋을 것으로 예상.
-    3. 키워드 변환을 통해 복 정확도를 높일 수 있을 것이라 예상함
+- 방법론 선정 이유
+  1. 정책 텍스트의 길이가 길고, 복잡하기 때문에 양방향 학습이 가능해야하며, 데이터가 크기 때문에 병렬처리가 가능한 KoBERT 모델을 선택.
+  2. KoBERT는 한국어 학습이 진행된 모델이므로 기존 BERT의 사전학습된 bert-base-multilingual-cased 보다 성능이 좋을 것으로 예상.
+  3. context에서 키워드를 변환함으로써 정확도를 높일 수 있을 것이라 예상함
 
-- 추천 모델</br>
-  **C. 유사도 기반 추천** [Code](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
+# 3-2. 프로젝트 방법론 - 추천 모델
+
+### A. 유사도 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 
   **D. Wide & Deep 추천**
 

@@ -10,7 +10,7 @@
 [4-1. 프로젝트 결과 및 보점 - 태깅모델](#4-1-프로젝트-결과-및-보완점---태깅모델)</br>
 [4-2. 프로젝트 결과 및 보완점 - 추천모델](#4-2-프로젝트-결과-및-보완점---추천모델)</br>
 [5. 회고](#5-회고)</br>
-[6. Next step after lesson learned](##6-Next-step-after-lesson-learned)
+[6. Next step after lesson learned](#6-next-step-after-lesson-learned)
 
 
 # 1. 프로젝트 제목

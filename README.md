@@ -191,4 +191,6 @@
 
 # 6. Next step after lesson learned
 - [딥러닝 CNN 공부](https://github.com/jiho-kang/DL_CNN_STUDY)
+  - 딥러닝 기초 이론 복습, computer vision 공부, keras 프레임워크 기능 구현을 위해.
 - [원티드 프리온보딩 AI/ML 코스(NLP) 참가](https://www.wanted.co.kr/events/pre_onboarding_course_9)
+  - NLP 공부, pytorch 프레임워크 공부를 위해.

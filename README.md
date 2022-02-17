@@ -115,17 +115,41 @@
 
 ### B. Wide & Depp 기반 추천 [{filteirng_similarity_code.ipynb)](https://github.com/jiho-kang/NLP_RecSys_Project/blob/main/filteirng_similarity_code.ipynb)
 - 방법</br>
-  USER가 평가한 POLICY 정보가 없기 때문에 label을 강제로 만들어줘야 함.</br></br>
-  a. USER의 '관심정책' feature를 사용하여 1,0 binary하게 생성.
-    - 단점: 관심정책 feature는 모델 성능 개선에 기여할 수 있는 부분인데 label로 사용됨. | POLICY마다 '관심정책' feature 값을 새롭게 만들어야 하므로 공수가 많음
-  b. USER와 POLICY의 공통된 feature에서 겹치는게 n개 이상일 경우 1, 아닐 경우 0 binary하게 생성
-    - 단점: feaure가 겹친다고 해서 유저가 원하는 정책인지는 의문.
-  
+  1. label: 유저가 선호하는 정책(중복가능 11개)과 유저 태그가 정책데이터 특성과의 일치여부에 따라 1,0으로 부여.
+    - 유저와 정책 데이터셋의 '선호정책'을 One Hot Encoding 하여 정책 데이터가 유저 선호정책(중복 선택 중) 한개라도 포함될 경우.
+    - 유저와 정책 데이터셋의 중요태그(대상특성, 직장, 가구원 등)가 모두 부합할 경우.
+    - 위 두가지 조건(관심정책 & 중요태그) 일치 여부에 따라 라벨 1 또는 0으로 부여.
+  2. train
+    - wide part(w/ cross product transformation) & deep part input 진행 및 학습.
+  3. recommendation
+    - 특정 유저의 특성과 전체 정책의 특성 조합에 대한 label을 예측.
+    - 가장 높은 점수의 정책 5개 ~10개 추천 진행.
+
+  ```python
+
+  """
+  _x: 유저 데이터 특성
+  _y: 정책 데이터 특성
+  두 가지가 모두 1이 되는 경우를 기억하기 위한 crossed_cols 설정
+  """
+  # wide part 특성
+  wide_cols = ['성별_x', '자녀_x', 'mb_10+대상특성', 'mb_11+관심상황특성','대상특성', '대상특성상세',
+         '소관기관유형', '지원유형', '지원유형상세', '신청절차', '성별_y','자녀_y']
+
+  # wide part의 cross layer 설정
+  crossed_cols = (['성별_x', '성별_y'], ['자녀_x', '자녀_y'], ['mb_10+대상특성','대상특성'])
+
+  # deep part 특성
+  embedding_cols = ['성별_x', '자녀_x', 'mb_10+대상특성', 'mb_11+관심상황특성','대상특성', '대상특성상세',
+                    '소관기관유형', '지원유형', '지원유형상세', '신청절차', '성별_y','자녀_y']
+  cont_cols = ['나이','대상연령시작','대상연령끝']
+  ```
+
 - 방법론 선정 이유
 
   1. 정책 도메인 특성상 추천될 정책과 유저의 조건이 부합하는 것이 중요하면서도, 새로운 정책을 추천할 수 있어야 함.
-  2. Wide Part는 Linear한 부분으로, 유저와 정책의 특성이 정확히 일치하는 부분에 대해 기억하여 상세화된 예측 결과를 제시할 수 있음. 과적합 발생 가능.
-  3. Deep Part는 Non-Linear한 부분으로, 유저와 정책의 특성을 일반화하여 추천함. 과적합 방지. 새로운 정책 추천 가능.
+  2. Wide Part는 Linear한 부분으로, 유저와 정책의 특성이 정확히 일치하는 부분에 대해 memorization. 상세화된 예측 결과를 제시할 수 있음. 과적합 발생 가능.
+  3. Deep Part는 Non-Linear한 부분으로, 유저와 정책의 특성을 generalization하여 freshness를 높일 수 있음. 과적합 방지.
  
  </br>
 

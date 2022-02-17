@@ -189,6 +189,6 @@
 
 </br>
 
-## 6. Next step after lesson learned
+# 6. Next step after lesson learned
 - [딥러닝 CNN 공부](https://github.com/jiho-kang/DL_CNN_STUDY)
 - [원티드 프리온보딩 AI/ML 코스(NLP) 참가](https://www.wanted.co.kr/events/pre_onboarding_course_9)
